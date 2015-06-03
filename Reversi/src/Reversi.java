@@ -30,7 +30,7 @@ public class Reversi {
 	}
 	
 
-	public Point[] findLegalMoves(Board b){
+	public static Point[] findLegalMoves(Board b){
 		ArrayList<Point> tmp = new ArrayList<Point>();
 		
 		for(int i = 0; i < b.state.length; i++){
@@ -38,51 +38,189 @@ public class Reversi {
 				if(b.state[i][j] == EMPTY){
 					//must check neighboring spaces (without going out of bounds) to determine if this spot is legal
 					
+					int offset;
+					boolean confirmedLegal = false;
 					//spot above
 					if(j > 0 && b.state[i][j-1] == -b.turn){	//move can only be legal if there's a neighboring enemy piece (and isn't out of bounds)
+						offset = 2;
 						
+						while(j-offset > 0){
+							if(b.state[i][j-offset] == -b.turn){	//if it's another enemy piece, go further down the chain
+								offset++;
+							}
+							
+							else if(b.state[i][j-offset] == b.turn){	//if it's one of our pieces, we have a legal move
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//upper right
 					
-					else if((j > 0 && i < 7) && b.state[i+1][j-1] == -b.turn){
+					if((j > 0 && i < 7) && !confirmedLegal && b.state[i+1][j-1] == -b.turn){	//if we've already determined this spot to be a legal move, dont bother checking the other cases
+						offset = 2;
 						
+						while(j-offset > 0 && i+offset < 7){
+							if(b.state[i+offset][j-offset] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i+offset][j-offset] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//right
 					
-					else if(i < 7 && b.state[i+1][j] == -b.turn){
+					if(i < 7 && !confirmedLegal && b.state[i+1][j] == -b.turn){
+						offset = 2;
 						
+						while(i+offset < 7){
+							if(b.state[i+offset][j] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i+offset][j] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//bottom right
 					
-					else if((j < 7 && i < 7) && b.state[i+1][j+1] == -b.turn){
+					if((j < 7 && i < 7) && !confirmedLegal && b.state[i+1][j+1] == -b.turn){
+						offset = 2;
 						
+						while(j+offset < 7 && i+offset < 7){
+							if(b.state[i+offset][j+offset] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i+offset][j+offset] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//bottom
 					
-					else if(j < 7 && b.state[i][j+1] == -b.turn){
+					if(j < 7 && !confirmedLegal && b.state[i][j+1] == -b.turn){
+						offset = 2;
 						
+						while(j+offset < 7){
+							if(b.state[i][j+offset] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i][j+offset] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//bottom left
 					
-					else if((j < 7 && i > 0) && b.state[i-1][j+1] == -b.turn){
+					if((j < 7 && i > 0) && !confirmedLegal && b.state[i-1][j+1] == -b.turn){
+						offset = 2;
 						
+						while(j+offset < 7 && i-offset > 0){
+							if(b.state[i-offset][j+offset] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i-offset][j+offset] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//left
 					
-					else if(i > 0 && b.state[i-1][j] == -b.turn){
+					if(i > 0 && !confirmedLegal && b.state[i-1][j] == -b.turn){
+						offset = 2;
 						
+						while(i-offset > 0){
+							if(b.state[i-offset][j] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i-offset][j] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 					
 					//upper left
 					
-					else if((i > 0 && j > 0) && b.state[i-1][j-1] == -b.turn){
+					if((i > 0 && j > 0) && !confirmedLegal && b.state[i-1][j-1] == -b.turn){
+						offset = 2;
 						
+						while(j-offset > 0 && i-offset > 0){
+							if(b.state[i-offset][j-offset] == -b.turn){
+								offset++;
+							}
+							
+							else if(b.state[i-offset][j-offset] == b.turn){
+								Point p = new Point(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
 					}
 				}
 			}

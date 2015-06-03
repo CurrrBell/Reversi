@@ -23,6 +23,25 @@ public class Board {
 		state[4][4] = WHITE;
 		
 		turn = BLACK;
-	}		
+	}
+	
+	public void printBoard(){
+		for(int j = 0; j < state.length; j++){
+			for(int i = 0; i < state[j].length; i++){
+				if(state[i][j] == WHITE){
+					System.out.print("[W]");
+				}
+				
+				else if(state[i][j] == BLACK){
+					System.out.print("[B]");
+				}
+				
+				else{
+					System.out.print("[ ]");
+				}
+			}
+			System.out.println();
+		}
+	}
 }
 
