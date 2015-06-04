@@ -1,5 +1,5 @@
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.*;
 
 
 public class Reversi {
@@ -8,9 +8,26 @@ public class Reversi {
 	public static final int BLACK = 1;
 	Board currentState;
 	int turn;
+	static int computerColor = BLACK;
+	
 	
 	public static void main(String[] args) {
 
+	}
+	
+	public Reversi(){
+		currentState = new Board();
+		updateTurn();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("What color would you like to play? (B or W)");
+		
+		if(sc.nextLine().equals("B")){
+			computerColor = WHITE;
+		}
+		else{
+			computerColor = BLACK;
+		}
+		sc.close();
 	}
 	
 	public int[] findMove(){
@@ -29,6 +46,60 @@ public class Reversi {
 		 */
 	}
 	
+	public static int findScore(Board b){
+		/*
+		 * Analyzes the board state and gives it a score of how favorable the state is for the computer player
+		 * 
+		 * This analysis is based on minimizing so-called "frontier pieces", that is, pieces that have empty
+		 * adjacent spaces. A board state with many frontier pieces has a low score, as it gives more 
+		 * opportunities for the opponent. Having mainly, or entirely, interior spaces occupied is usually
+		 * advantageous as it limits the opponent's options.
+		 */
+		
+		int frontierSpaces = 0;
+		
+		for(int i = 0; i < b.state.length; i++){
+			for(int j = 0; j < b.state[i].length; j++){
+				if(b.state[i][j] == computerColor){	//look at all spaces around our piece
+					//if any adjacent spots are empty, it is a frontier piece
+					
+					if(j > 0 && b.state[i][j-1] == EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if((j > 0 && i < 7) && b.state[i+1][j-1] == EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if(i < 7 && b.state[i+1][j] == EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if((j < 7 && i < 7) && b.state[i+1][j+1] == -EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if(j < 7 && b.state[i][j+1] == EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if((j < 7 && i > 0) && b.state[i-1][j+1] == EMPTY){
+						frontierSpaces++;						
+					}
+					
+					else if(i > 0 && b.state[i-1][j] == EMPTY){
+						frontierSpaces++;
+					}
+					
+					else if((i > 0 && j > 0) && b.state[i-1][j-1] == EMPTY){
+						frontierSpaces++;
+					}
+				}
+			}
+		}
+		
+		return frontierSpaces;
+	}
 
 	public static Point[] findLegalMoves(Board b){
 		ArrayList<Point> tmp = new ArrayList<Point>();
@@ -235,6 +306,8 @@ public class Reversi {
 		return Points;
 	}
 
-	
+	public void updateTurn(){
+		this.turn = currentState.turn;
+	}
 	
 }
