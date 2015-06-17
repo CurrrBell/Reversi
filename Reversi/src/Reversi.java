@@ -1,4 +1,3 @@
-import java.awt.Point;
 import java.util.*;
 
 
@@ -6,13 +5,17 @@ public class Reversi {
 	public static final int WHITE = -1;
 	public static final int EMPTY = 0;
 	public static final int BLACK = 1;
-	Board currentState;
+	static Board currentState;
+	static int[][] spaceWeights = new int[8][8];
+	static ArrayList<Move> possibleMoves = new ArrayList<Move>();
 	int turn;
 	static int computerColor = BLACK;
 	
 	
 	public static void main(String[] args) {
-
+		currentState = new Board();
+		Board.populateWeights(spaceWeights);
+		
 	}
 	
 	public Reversi(){
@@ -56,7 +59,17 @@ public class Reversi {
 		 * advantageous as it limits the opponent's options.
 		 */
 		
-		int frontierSpaces = 0;
+		int score = 0;		
+		Move testMove = new Move();
+		
+		for(int i = 0; i < possibleMoves.size(); i++){
+			if(possibleMoves.get(i).isNew()){	//make sure we don't check the same move twice
+				testMove = possibleMoves.get(i);
+				possibleMoves.get(i).nowTested();
+			}
+		}
+		
+		score += spaceWeights[testMove.getX()][testMove.getY()];
 		
 		for(int i = 0; i < b.state.length; i++){
 			for(int j = 0; j < b.state[i].length; j++){
@@ -64,45 +77,101 @@ public class Reversi {
 					//if any adjacent spots are empty, it is a frontier piece
 					
 					if(j > 0 && b.state[i][j-1] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if((j > 0 && i < 7) && b.state[i+1][j-1] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if(i < 7 && b.state[i+1][j] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if((j < 7 && i < 7) && b.state[i+1][j+1] == -EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if(j < 7 && b.state[i][j+1] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if((j < 7 && i > 0) && b.state[i-1][j+1] == EMPTY){
-						frontierSpaces++;						
+						score--;						
 					}
 					
 					else if(i > 0 && b.state[i-1][j] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 					
 					else if((i > 0 && j > 0) && b.state[i-1][j-1] == EMPTY){
-						frontierSpaces++;
+						score--;
 					}
 				}
 			}
 		}
 		
-		return frontierSpaces;
+		return score;
+	}
+	
+	public Board generateNeighbor(Move m){	//generate a board object that represents what the board would look like if you made move m
+		Board b = currentState;
+		int offset;
+		
+		if(m.getY() > 0 && b.state[m.getY()-1][m.getX()] == -computerColor){	//if we make a move here, is there a chain of pieces above that need to be flipped?
+			boolean validChain = false;
+			offset = 2;
+			
+			while(true){	//walk down the chain until you find either an empty space or a computer piece
+				if((m.getY()-offset > -1) && b.state[m.getY()-offset][m.getX()] == computerColor)
+					validChain = true;
+				else if((m.getY()-offset > -1) && b.state[m.getY()-offset][m.getX()] == -computerColor)	//if its another enemy piece, keep walking
+					offset++;
+				else{	//if the space is empty, we don't have a valid chain
+					break;
+				}
+			}
+			
+			if(validChain){	//flip the pieces
+				offset--;	//account for the fact that we're on our own piece -- don't want to flip that
+				
+				while(offset > 0){
+					b.state[m.getY()-offset][m.getX()] *= -1;
+					offset--;					
+				}
+			}
+		}
+		
+		if((m.getY() > 0 && m.getX() < 7) && b.state[m.getY()-1][m.getX()+1] == -computerColor){ //top right
+			boolean validChain = false;
+			offset = 2;
+			
+			while(true){
+				if((m.getY()-offset > -1 && m.getX()+offset < 8) && b.state[m.getY()-offset][m.getX()+offset] == computerColor)
+					validChain = true;
+				else if((m.getY()-offset > -1 && m.getX()+offset < 8) && b.state[m.getY()-offset][m.getX()+offset] == -computerColor)
+					offset++;
+				else{
+					break;
+				}
+			}
+			
+			if(validChain){
+				offset--;
+				
+				while(offset > 0){
+					b.state[m.getY()-offset][m.getX()+offset] *= -1;
+					offset--;					
+				}
+			}
+		}
+		
+		
+		
+		return b;
 	}
 
-	public static Point[] findLegalMoves(Board b){
-		ArrayList<Point> tmp = new ArrayList<Point>();
+	public static void findLegalMoves(Board b){
 		
 		for(int i = 0; i < b.state.length; i++){
 			for(int j = 0; j < b.state[i].length; j++){
@@ -121,8 +190,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i][j-offset] == b.turn){	//if it's one of our pieces, we have a legal move
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -144,8 +213,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i+offset][j-offset] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -167,8 +236,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i+offset][j] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -190,8 +259,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i+offset][j+offset] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -213,8 +282,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i][j+offset] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -236,8 +305,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i-offset][j+offset] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -259,8 +328,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i-offset][j] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -282,8 +351,8 @@ public class Reversi {
 							}
 							
 							else if(b.state[i-offset][j-offset] == b.turn){
-								Point p = new Point(i, j);
-								tmp.add(p);
+								Move p = new Move(i, j);
+								possibleMoves.add(p);
 								confirmedLegal = true;
 								break;
 							}
@@ -295,15 +364,7 @@ public class Reversi {
 					}
 				}
 			}
-		}
-		
-		Point[] Points = new Point[tmp.size()];
-		
-		for(int i = 0; i < Points.length; i++){
-			Points[i] = tmp.get(i);
-		}
-		
-		return Points;
+		}		
 	}
 
 	public void updateTurn(){
