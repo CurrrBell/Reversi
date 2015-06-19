@@ -7,7 +7,7 @@ public class Reversi {
 	public static final int BLACK = 1;
 	static Board currentState;
 	static int[][] spaceWeights = new int[8][8];
-	static ArrayList<Move> possibleMoves = new ArrayList<Move>();
+	static Move[] possibleMoves;
 	int turn;
 	static int computerColor = BLACK;
 	
@@ -62,10 +62,10 @@ public class Reversi {
 		int score = 0;		
 		Move testMove = new Move();
 		
-		for(int i = 0; i < possibleMoves.size(); i++){
-			if(possibleMoves.get(i).isNew()){	//make sure we don't check the same move twice
-				testMove = possibleMoves.get(i);
-				possibleMoves.get(i).nowTested();
+		for(int i = 0; i < possibleMoves.length; i++){
+			if(possibleMoves[i].isNew()){	//make sure we don't check the same move twice
+				testMove = possibleMoves[i];
+				possibleMoves[i].nowTested();
 			}
 		}
 		
@@ -169,202 +169,6 @@ public class Reversi {
 		
 		
 		return b;
-	}
-
-	public static void findLegalMoves(Board b){
-		
-		for(int i = 0; i < b.state.length; i++){
-			for(int j = 0; j < b.state[i].length; j++){
-				if(b.state[i][j] == EMPTY){
-					//must check neighboring spaces (without going out of bounds) to determine if this spot is legal
-					
-					int offset;
-					boolean confirmedLegal = false;
-					//spot above
-					if(j > 0 && b.state[i][j-1] == -b.turn){	//move can only be legal if there's a neighboring enemy piece (and isn't out of bounds)
-						offset = 2;
-						
-						while(j-offset > 0){
-							if(b.state[i][j-offset] == -b.turn){	//if it's another enemy piece, go further down the chain
-								offset++;
-							}
-							
-							else if(b.state[i][j-offset] == b.turn){	//if it's one of our pieces, we have a legal move
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//upper right
-					
-					if((j > 0 && i < 7) && !confirmedLegal && b.state[i+1][j-1] == -b.turn){	//if we've already determined this spot to be a legal move, dont bother checking the other cases
-						offset = 2;
-						
-						while(j-offset > 0 && i+offset < 7){
-							if(b.state[i+offset][j-offset] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i+offset][j-offset] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//right
-					
-					if(i < 7 && !confirmedLegal && b.state[i+1][j] == -b.turn){
-						offset = 2;
-						
-						while(i+offset < 7){
-							if(b.state[i+offset][j] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i+offset][j] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//bottom right
-					
-					if((j < 7 && i < 7) && !confirmedLegal && b.state[i+1][j+1] == -b.turn){
-						offset = 2;
-						
-						while(j+offset < 7 && i+offset < 7){
-							if(b.state[i+offset][j+offset] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i+offset][j+offset] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//bottom
-					
-					if(j < 7 && !confirmedLegal && b.state[i][j+1] == -b.turn){
-						offset = 2;
-						
-						while(j+offset < 7){
-							if(b.state[i][j+offset] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i][j+offset] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//bottom left
-					
-					if((j < 7 && i > 0) && !confirmedLegal && b.state[i-1][j+1] == -b.turn){
-						offset = 2;
-						
-						while(j+offset < 7 && i-offset > 0){
-							if(b.state[i-offset][j+offset] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i-offset][j+offset] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//left
-					
-					if(i > 0 && !confirmedLegal && b.state[i-1][j] == -b.turn){
-						offset = 2;
-						
-						while(i-offset > 0){
-							if(b.state[i-offset][j] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i-offset][j] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-					
-					//upper left
-					
-					if((i > 0 && j > 0) && !confirmedLegal && b.state[i-1][j-1] == -b.turn){
-						offset = 2;
-						
-						while(j-offset > 0 && i-offset > 0){
-							if(b.state[i-offset][j-offset] == -b.turn){
-								offset++;
-							}
-							
-							else if(b.state[i-offset][j-offset] == b.turn){
-								Move p = new Move(i, j);
-								possibleMoves.add(p);
-								confirmedLegal = true;
-								break;
-							}
-							
-							else{
-								break;
-							}
-						}
-					}
-				}
-			}
-		}		
 	}
 
 	public void updateTurn(){

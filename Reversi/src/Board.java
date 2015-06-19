@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class Board {
 
@@ -110,5 +112,216 @@ public class Board {
 		a[7][7] = 99;
 		
 	}
-}
 
+	public Move[] findLegalMoves(){
+		ArrayList<Move> tmp = new ArrayList<Move>();
+		
+		for(int i = 0; i < this.state.length; i++){
+			for(int j = 0; j < this.state[i].length; j++){
+				if(this.state[i][j] == EMPTY){
+					//must check neighboring spaces (without going out of bounds) to determine if this spot is legal
+					
+					int offset;
+					boolean confirmedLegal = false;
+					//spot above
+					if(j > 0 && this.state[i][j-1] == -this.turn){	//move can only be legal if there's a neighboring enemy piece (and isn't out of bounds)
+						offset = 2;
+						
+						while(j-offset > 0){
+							if(this.state[i][j-offset] == -this.turn){	//if it's another enemy piece, go further down the chain
+								offset++;
+							}
+							
+							else if(this.state[i][j-offset] == this.turn){	//if it's one of our pieces, we have a legal move
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//upper right
+					
+					if((j > 0 && i < 7) && !confirmedLegal && this.state[i+1][j-1] == -this.turn){	//if we've already determined this spot to be a legal move, dont bother checking the other cases
+						offset = 2;
+						
+						while(j-offset > 0 && i+offset < 7){
+							if(this.state[i+offset][j-offset] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i+offset][j-offset] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//right
+					
+					if(i < 7 && !confirmedLegal && this.state[i+1][j] == -this.turn){
+						offset = 2;
+						
+						while(i+offset < 7){
+							if(this.state[i+offset][j] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i+offset][j] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//bottom right
+					
+					if((j < 7 && i < 7) && !confirmedLegal && this.state[i+1][j+1] == -this.turn){
+						offset = 2;
+						
+						while(j+offset < 7 && i+offset < 7){
+							if(this.state[i+offset][j+offset] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i+offset][j+offset] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//bottom
+					
+					if(j < 7 && !confirmedLegal && this.state[i][j+1] == -this.turn){
+						offset = 2;
+						
+						while(j+offset < 7){
+							if(this.state[i][j+offset] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i][j+offset] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//bottom left
+					
+					if((j < 7 && i > 0) && !confirmedLegal && this.state[i-1][j+1] == -this.turn){
+						offset = 2;
+						
+						while(j+offset < 7 && i-offset > 0){
+							if(this.state[i-offset][j+offset] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i-offset][j+offset] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//left
+					
+					if(i > 0 && !confirmedLegal && this.state[i-1][j] == -this.turn){
+						offset = 2;
+						
+						while(i-offset > 0){
+							if(this.state[i-offset][j] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i-offset][j] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+					
+					//upper left
+					
+					if((i > 0 && j > 0) && !confirmedLegal && this.state[i-1][j-1] == -this.turn){
+						offset = 2;
+						
+						while(j-offset > 0 && i-offset > 0){
+							if(this.state[i-offset][j-offset] == -this.turn){
+								offset++;
+							}
+							
+							else if(this.state[i-offset][j-offset] == this.turn){
+								Move p = new Move(i, j);
+								tmp.add(p);
+								confirmedLegal = true;
+								break;
+							}
+							
+							else{
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		Move[] moves = new Move[tmp.size()];
+		
+		for(int i = 0; i < moves.length; i++){
+			moves[i] = tmp.get(i);
+		}
+		
+		return moves;
+		
+	}
+
+	public Board updateBoard(Board b, Move m){
+		/*
+		 * takes in a given move for a given player and returns the board after appropriate pieces are flipped
+		 */
+		return new Board();
+	}
+}
