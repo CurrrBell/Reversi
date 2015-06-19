@@ -33,4 +33,15 @@ public class Move {
 	public String toString(){
 		return "X: " + this.X + "\tY: " + this.Y;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Move){
+			if(((Move) o).getX() == this.getX() && ((Move) o).getY() == this.getY()){
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

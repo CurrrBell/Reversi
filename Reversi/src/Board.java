@@ -10,7 +10,6 @@ public class Board {
 	int[][] state = new int[8][8];
 	int turn;
 	
-	
 	public Board(){
 		//setup initial board state
 		for(int i = 0; i < state.length; i++){
