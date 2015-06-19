@@ -59,14 +59,26 @@ public class BoardTest {
 	
 	
 	@Test
-	public void testUpdateBoard(){
+	public void testUpdateBoardRight(){	//test flipping pieces to the right
 		Move[] moves = b.findLegalMoves();
-		Board actual = Board.updateBoard(b, moves[0]);
-		Board expected = new Board();
+		assertEquals(new Move(2, 3), moves[0]);
+		Board expected = Board.copyBoard(b);
+		Board actual = b.updateBoard(moves[0]);		
 		expected.state[2][3] = Board.BLACK;
 		expected.state[3][3] = Board.BLACK;
-		assertEquals(actual.state[2][3], expected.state[2][3]);
-		assertEquals(actual.state[3][3], expected.state[3][3]);
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testUpdateBoardBottomRight(){
+		b.state[5][5] = Board.BLACK;
+		Move m = new Move(2, 2);
+		Board actual = b.updateBoard(m);
+		Board expected = Board.copyBoard(b);
+		expected.state[2][2] = Board.BLACK;
+		expected.state[3][3] = Board.BLACK;
+		expected.state[4][4] = Board.BLACK;
+		assertEquals(expected, actual);
 	}
 	
 }

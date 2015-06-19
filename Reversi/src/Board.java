@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class Board {
@@ -27,7 +28,9 @@ public class Board {
 	}
 	
 	public void printBoard(){
+		System.out.println("   0  1  2  3  4  5  6  7");
 		for(int j = 0; j < state.length; j++){
+			System.out.print(j + " ");
 			for(int i = 0; i < state[j].length; i++){
 				if(state[i][j] == WHITE){
 					System.out.print("[W]");
@@ -41,8 +44,10 @@ public class Board {
 					System.out.print("[ ]");
 				}
 			}
+			System.out.print(" " + j);
 			System.out.println();
 		}
+		System.out.println("   0  1  2  3  4  5  6  7");
 	}
 	
 	public static void populateWeights(int[][] a){
@@ -317,13 +322,76 @@ public class Board {
 		
 	}
 
-	public static Board updateBoard(Board b, Move m){
+	public static Board copyBoard(Board b){
+		Board newB = new Board();
+		
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				newB.state[i][j] = b.state[i][j];
+			}
+		}
+		
+		newB.turn = b.turn;
+		
+		return newB;
+	}
+	public Board updateBoard(Move m){
 		/*
 		 * takes in a given move (*ASSUMED LEGAL*) for a given player and returns the board after appropriate pieces are flipped
 		 */
 		
-		Board after = b;
+		Board after = copyBoard(this);
+		after.state[m.getX()][m.getY()] = this.turn;	//make the actual Move m
+		int offset = 0;
+		//check for flippable pieces starting on the right
+		if((m.getX() < 7) && this.state[m.getX()+1][m.getY()] == -this.turn){
+			//now we have to make sure one of the moving player's pieces is on the other side of this/these flippable piece(s)
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	//walk down the chain until you find either an empty space or a computer piece
+				if((m.getX()+offset < 8) && this.state[m.getX()+offset][m.getY()] == this.turn)
+					validChain = true;
+				else if((m.getX()+offset < 8) && this.state[m.getX()+offset][m.getY()] == -this.turn)	//if its another enemy piece, keep walking
+					offset++;
+				else{	//if the space is empty, we don't have a valid chain
+					break;
+				}
+			}
+			
+			if(validChain){	//flip the pieces
+				offset--;	//account for the fact that we're on our own piece -- don't want to flip that
+				
+				while(offset > 0){
+					after.state[m.getX()+offset][m.getY()] *= -1;
+					offset--;					
+				}
+			}
+			
+		}
+		
+		
 		
 		return after;
+	}
+	
+	
+	@Override
+	public boolean equals(Object o){
+		if(o instanceof Board){
+			System.out.println("yup");
+			if(this.turn == ((Board) o).turn){
+				for(int i = 0; i < 8; i++){
+					for(int j = 0; j < 8; j++){
+						if(this.state[i][j] != ((Board) o).state[i][j]){
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
