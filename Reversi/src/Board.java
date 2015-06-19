@@ -317,10 +317,13 @@ public class Board {
 		
 	}
 
-	public Board updateBoard(Board b, Move m){
+	public static Board updateBoard(Board b, Move m){
 		/*
-		 * takes in a given move for a given player and returns the board after appropriate pieces are flipped
+		 * takes in a given move (*ASSUMED LEGAL*) for a given player and returns the board after appropriate pieces are flipped
 		 */
-		return new Board();
+		
+		Board after = b;
+		
+		return after;
 	}
 }
