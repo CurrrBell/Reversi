@@ -366,12 +366,191 @@ public class Board {
 					after.state[m.getX()+offset][m.getY()] *= -1;
 					offset--;					
 				}
-			}
-			
+			}			
 		}
 		
+		//bottom right
+		if((m.getX() < 7 && m.getY() < 7) && this.state[m.getX()+1][m.getY()+1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getX()+offset < 8 && m.getY()+offset < 8) && this.state[m.getX()+offset][m.getY()+offset] == this.turn)
+					validChain = true;
+				else if((m.getX()+offset < 8 && m.getY()+offset < 8) && this.state[m.getX()+offset][m.getY()+offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()+offset][m.getY()+offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
+
+		//bottom
+		if((m.getY() < 7) && this.state[m.getX()][m.getY()+1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getY()+offset < 8) && this.state[m.getX()][m.getY()+offset] == this.turn)
+					validChain = true;
+				else if((m.getY()+offset < 8) && this.state[m.getX()][m.getY()+offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()][m.getY()+offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
 		
+		//bottom left
+		if((m.getX() > 0 && m.getY() < 7) && this.state[m.getX()-1][m.getY()+1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getX()-offset > -1 && m.getY()+offset < 8) && this.state[m.getX()-offset][m.getY()+offset] == this.turn)
+					validChain = true;
+				else if((m.getX()-offset > -1 && m.getY()+offset < 8) && this.state[m.getX()-offset][m.getY()+offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()-offset][m.getY()+offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
 		
+		//left
+		if((m.getX() > 0) && this.state[m.getX()-1][m.getY()] == -this.turn){
+			//now we have to make sure one of the moving player's pieces is on the other side of this/these flippable piece(s)
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	//walk down the chain until you find either an empty space or a computer piece
+				if((m.getX()-offset > -1) && this.state[m.getX()-offset][m.getY()] == this.turn)
+					validChain = true;
+				else if((m.getX()-offset > -1) && this.state[m.getX()-offset][m.getY()] == -this.turn)	//if its another enemy piece, keep walking
+					offset++;
+				else{	//if the space is empty, we don't have a valid chain
+					break;
+				}
+			}
+			
+			if(validChain){	//flip the pieces
+				offset--;	//account for the fact that we're on our own piece -- don't want to flip that
+				
+				while(offset > 0){
+					after.state[m.getX()-offset][m.getY()] *= -1;
+					offset--;					
+				}
+			}			
+		}
+
+		//top left
+		if((m.getX() > 0 && m.getY() > 0) && this.state[m.getX()-1][m.getY()-1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getX()-offset > -1 && m.getY()-offset > -1) && this.state[m.getX()-offset][m.getY()-offset] == this.turn)
+					validChain = true;
+				else if((m.getX()-offset > -1 && m.getY()-offset > -1) && this.state[m.getX()-offset][m.getY()-offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()-offset][m.getY()-offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
+		
+		//Above
+		if((m.getY() > 0) && this.state[m.getX()][m.getY()-1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getY()-offset > -1) && this.state[m.getX()][m.getY()-offset] == this.turn)
+					validChain = true;
+				else if((m.getY()-offset > -1) && this.state[m.getX()][m.getY()-offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()][m.getY()-offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
+		
+		//top right
+		if((m.getX() < 7 && m.getY() > 0) && this.state[m.getX()+1][m.getY()-1] == -this.turn){
+			
+			boolean validChain = false;
+			offset = 2;
+			
+			while(!validChain){	
+				if((m.getX()+offset < 8 && m.getY()-offset > -1) && this.state[m.getX()+offset][m.getY()-offset] == this.turn)
+					validChain = true;
+				else if((m.getX()+offset < 8 && m.getY()-offset > -1) && this.state[m.getX()+offset][m.getY()-offset] == -this.turn)	
+					offset++;
+				else{	
+					break;
+				}
+			}
+			
+			if(validChain){	
+				offset--;	
+				
+				while(offset > 0){
+					after.state[m.getX()+offset][m.getY()-offset] *= -1;
+					offset--;					
+				}
+			}			
+		}
+
 		return after;
 	}
 	
@@ -379,7 +558,6 @@ public class Board {
 	@Override
 	public boolean equals(Object o){
 		if(o instanceof Board){
-			System.out.println("yup");
 			if(this.turn == ((Board) o).turn){
 				for(int i = 0; i < 8; i++){
 					for(int j = 0; j < 8; j++){
