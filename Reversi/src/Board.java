@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class Board {
 
@@ -335,6 +333,7 @@ public class Board {
 		
 		return newB;
 	}
+	
 	public Board updateBoard(Move m){
 		/*
 		 * takes in a given move (*ASSUMED LEGAL*) for a given player and returns the board after appropriate pieces are flipped
@@ -553,7 +552,6 @@ public class Board {
 
 		return after;
 	}
-	
 	
 	@Override
 	public boolean equals(Object o){

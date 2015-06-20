@@ -43,10 +43,11 @@ public class Reversi {
 		return derp;
 	}
 	
-	public void findNeighbors(Board b){
-		/*
-		 * finds all possible board states one move away from current state b.
-		 */
+	public static Board[] findNeighbors(Board b){
+		
+		
+		
+		return new Board[1];
 	}
 	
 	public static int findScore(Board b){
