@@ -33,24 +33,19 @@ public class Reversi {
 		sc.close();
 	}
 	
-	public int[] findMove(){
+	public Move findMove(){
 		/*
 		 * implementation of minimax algorithm with alpha-beta pruning.
-		 * 
 		 */
 		
-		int[] derp = {};
-		return derp;
+		
+		
+		return new Move();
 	}
 	
-	public static Board[] findNeighbors(Board b){
-		
-		
-		
-		return new Board[1];
-	}
 	
-	public static int findScore(Board b){
+	
+	public static void findScore(Board b){
 		/*
 		 * Analyzes the board state and gives it a score of how favorable the state is for the computer player
 		 * 
@@ -112,7 +107,7 @@ public class Reversi {
 			}
 		}
 		
-		return score;
+		b.assignScore(score);
 	}
 	
 	public Board generateNeighbor(Move m){	//generate a board object that represents what the board would look like if you made move m

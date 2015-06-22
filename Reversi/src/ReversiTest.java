@@ -13,8 +13,7 @@ public class ReversiTest {
 		expected[1] = b.updateBoard(new Move(3, 2));
 		expected[2] = b.updateBoard(new Move(4, 5));
 		expected[3] = b.updateBoard(new Move(5, 4));
-		Board[] actual = Reversi.findNeighbors(b);
-		
+		Board[] actual = Board.findNeighbors(b);		
 		assertArrayEquals(expected, actual);
 	}
 

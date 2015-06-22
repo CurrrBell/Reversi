@@ -8,6 +8,7 @@ public class Board {
 	
 	int[][] state = new int[8][8];
 	int turn;
+	int score;
 	
 	public Board(){
 		//setup initial board state
@@ -23,6 +24,15 @@ public class Board {
 		state[4][4] = WHITE;
 		
 		turn = BLACK;
+		score = Integer.MIN_VALUE;
+	}
+	
+	public void resetScore(){
+		this.score = Integer.MIN_VALUE;
+	}
+	
+	public void assignScore(int i){
+		this.score = i;
 	}
 	
 	public void printBoard(){
@@ -551,6 +561,23 @@ public class Board {
 		}
 
 		return after;
+	}
+	
+	public static Board[] findNeighbors(Board b){
+		ArrayList<Board> bArrayList = new ArrayList<Board>();
+		Move[] possibleMoves = b.findLegalMoves();
+		
+		for(int i = 0; i < possibleMoves.length; i++){
+			bArrayList.add(b.updateBoard(possibleMoves[i]));
+		}
+		
+		Board[] Neighbors = new Board[bArrayList.size()];
+		
+		for(int i = 0; i < Neighbors.length; i++){
+			Neighbors[i] = bArrayList.get(i);
+		}
+		
+		return Neighbors;
 	}
 	
 	@Override
