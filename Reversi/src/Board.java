@@ -565,7 +565,7 @@ public class Board {
 		return after;
 	}
 	
-	public static Board[] findNeighbors(Board b){
+	public static Board[] findNeighbors(Board b){	//find all boards a one-move distance away from b
 		ArrayList<Board> bArrayList = new ArrayList<Board>();
 		Move[] possibleMoves = b.findLegalMoves();
 		

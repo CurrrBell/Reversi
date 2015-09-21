@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /*
  * Class for storing the game tree. Each node is a board state. Going deeper one level means going one move in the future.
  */
@@ -16,7 +18,7 @@ public class GameTree {
 	
 	void goDeeper(){	//construct the tree one level at a time. used for iterative deepening in minmax
 		
-		int currentDepth = 0;
+		/*int currentDepth = 0;
 		State statePointer = root;
 		
 		while(currentDepth < height){
@@ -33,16 +35,19 @@ public class GameTree {
 				break;
 		}
 		
-		height++;
+		height++;*/
+		
+		
 	}
 	
 	class State{
-		Board board;
-		State[]	neighbors;
+		Board board;	//data we care about
+		State neighbor;	//why an array of neighbors? couldn't it just be a list then have the last one point to null or the parent?
 		State parent;
+		State firstChild;
 		int depth;
 		int children;
-		int childNumber;
+		int childNumber;	//maybe nix with array of neighbors
 		int score;
 		
 		State(){			
@@ -50,18 +55,35 @@ public class GameTree {
 		
 		State(Board b){
 			this.board = b;
-			this.depth = GameTree.height;
 		}
 		
 		State(Board b, State p){
 			this.board = b;
-			this.depth = GameTree.height;
 			this.parent = p;
 			//Reversi.findScore(this.board);
 			//this.score = this.board.score;
 		}
 		
-		void populateNeighbors(){
+		private State[] findChildren(State s){
+			ArrayList<State> cList = new ArrayList<State>();
+			State[] children;
+			
+			Board[] boards = Board.findNeighbors(s.board);	//find all possible moves from s
+			
+			for(int i = 0; i < boards.length; i++){
+				State tmp = new State(boards[i]);
+				cList.add(tmp);
+			}
+			
+			children = new State[cList.size()];
+			
+			for(int i = 0; i < children.length; i++){
+				children[i] = cList.get(i);
+			}
+			
+			return children;
+		}
+		/*void populateNeighbors(){
 			Board[] n = Board.findNeighbors(board);
 			this.neighbors = new State[n.length+1];
 			
@@ -79,10 +101,10 @@ public class GameTree {
 			}
 			
 			this.children = this.neighbors.length;
-		}
+		}*/
 		
-		State nextChild(int i){
+		/*State nextChild(int i){
 			return this.neighbors[i+1];
-		}
+		}*/
 	}
 }
