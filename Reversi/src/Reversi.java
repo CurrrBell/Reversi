@@ -1,5 +1,7 @@
 import java.util.*;
-
+/*
+ * Class for controlling the logic and flow of the actual game. Contains the computer player's logic for choosing moves.
+ */
 
 public class Reversi {
 	public static final int WHITE = -1;

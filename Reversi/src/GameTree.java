@@ -1,4 +1,6 @@
-
+/*
+ * Class for storing the game tree. Each node is a board state. Going deeper one level means going one move in the future.
+ */
 public class GameTree {
 	State root;
 	static int height;

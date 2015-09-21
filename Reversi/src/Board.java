@@ -1,5 +1,7 @@
 import java.util.ArrayList;
-
+/*
+ * Data structure for storing what would be on a physical reversi board.
+ */
 public class Board {
 
 	public static final int WHITE = -1;
