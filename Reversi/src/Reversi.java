@@ -47,7 +47,7 @@ public class Reversi {
 	
 	
 	
-	public static void findScore(Board b){
+	public static void findScore(Board b, Move m){
 		/*
 		 * Analyzes the board state and gives it a score of how favorable the state is for the computer player
 		 * 
@@ -58,16 +58,8 @@ public class Reversi {
 		 */
 		
 		int score = 0;		
-		Move testMove = new Move();
 		
-		for(int i = 0; i < possibleMoves.length; i++){
-			if(possibleMoves[i].isNew()){	//make sure we don't check the same move twice
-				testMove = possibleMoves[i];
-				possibleMoves[i].nowTested();
-			}
-		}
-		
-		score += spaceWeights[testMove.getX()][testMove.getY()];
+		score += spaceWeights[m.getX()][m.getY()];
 		
 		for(int i = 0; i < b.state.length; i++){
 			for(int j = 0; j < b.state[i].length; j++){

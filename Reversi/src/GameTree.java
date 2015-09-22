@@ -18,7 +18,7 @@ public class GameTree {
 	
 	void goDeeper(){	//construct the tree one level at a time. used for iterative deepening in minmax
 		
-		/*int currentDepth = 0;
+		int currentDepth = 0;
 		State statePointer = root;
 		
 		while(currentDepth < height){
@@ -26,28 +26,21 @@ public class GameTree {
 			currentDepth++;
 		}
 		
-		while(statePointer != null){	//terminate once we reach end of the chain of states to populate
-			statePointer.populateNeighbors();	
-			
-			if(statePointer.parent != null)	//if we're at the root, there's no more nodes to populate
-				statePointer = statePointer.parent.nextChild(statePointer.childNumber);
-			else
-				break;
-		}
 		
-		height++;*/
+		
+		height++;
 		
 		
 	}
 	
 	class State{
 		Board board;	//data we care about
-		State neighbor;	//why an array of neighbors? couldn't it just be a list then have the last one point to null or the parent?
+		State[] neighbors;	
 		State parent;
 		State firstChild;
 		int depth;
 		int children;
-		int childNumber;	//maybe nix with array of neighbors
+		int childNumber;	//used for traversing?
 		int score;
 		
 		State(){			
