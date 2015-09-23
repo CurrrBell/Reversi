@@ -21,10 +21,31 @@ public class GameTree {
 		int currentDepth = 0;
 		State statePointer = root;
 		
-		while(currentDepth < height){
-			statePointer = statePointer.neighbors[0];
-			currentDepth++;
+		while(currentDepth < height){	//traverse to the bottom level to begin population
+			if(statePointer.hasChildren()){	//if what we are on is a terminal losing state, we need to move to the next neighbor.
+				statePointer = statePointer.firstChild;
+				currentDepth++;
+			}
+			
+			else{
+				int neighborCounter = 0;
+				State originalState = statePointer;	//first state in the row
+				
+				while(true){
+					statePointer = originalState.neighbors[neighborCounter];	//if the one next to it also has no children, 
+					neighborCounter++;
+					
+					if(statePointer.hasChildren())
+						break;
+				}
+				
+				statePointer = statePointer.firstChild;
+				currentDepth++;
+			}
 		}
+		
+		// now that we're at the bottom, populate each state with children.
+		// TO DO: use a function after each round of children to check any of them for win conditions so we don't generate shit unnecessarily
 		
 		
 		
@@ -55,6 +76,13 @@ public class GameTree {
 			this.parent = p;
 			//Reversi.findScore(this.board);
 			//this.score = this.board.score;
+		}
+		
+		private boolean hasChildren(){	//helper function for goDeeper()
+			if(this.children > 0)
+				return true;
+			
+			return false;
 		}
 		
 		private State[] findChildren(State s){
