@@ -47,14 +47,22 @@ public class GameTree {
 		// now that we're at the bottom, populate each state with children.
 		// TO DO: use a function after each round of children to check any of them for win conditions so we don't generate shit unnecessarily
 		
+		State[] childrenHolder;
+		childrenHolder = State.findChildren(statePointer);
+		statePointer.firstChild = childrenHolder[0];
+		statePointer.children = childrenHolder.length;
+		//statepointer.firstChild.neighbors = childrenHolder[1-n] <----- how?
 		
+		for(int i = 0; i < statePointer.neighbors.length; i++){
+			
+		}
 		
 		height++;
 		
 		
 	}
 	
-	class State{
+	static class State{
 		Board board;	//data we care about
 		State[] neighbors;	
 		State parent;
@@ -85,7 +93,7 @@ public class GameTree {
 			return false;
 		}
 		
-		private State[] findChildren(State s){
+		private static State[] findChildren(State s){
 			ArrayList<State> cList = new ArrayList<State>();
 			State[] children;
 			
