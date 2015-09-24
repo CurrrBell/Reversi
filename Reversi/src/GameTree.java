@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class GameTree {
 	State root;
 	static int height;
+	static int size;
 	
 	GameTree(){
 		
@@ -13,15 +14,16 @@ public class GameTree {
 	
 	GameTree(Board b){
 		GameTree.height = 0;
-		this.root = new State(b);		
+		this.root = new State(b);	
+		this.size = 1;
 	}
 	
 	void goDeeper(){	//construct the tree one level at a time. used for iterative deepening in minmax
 		
 		int currentDepth = 0;
 		State statePointer = root;
-		
-		while(currentDepth < height){	//traverse to the bottom level to begin population
+		//traverse to the bottom level to begin population
+		while(currentDepth < height){
 			if(statePointer.hasChildren()){	//if what we are on is a terminal losing state, we need to move to the next neighbor.
 				statePointer = statePointer.firstChild;
 				currentDepth++;
@@ -47,14 +49,50 @@ public class GameTree {
 		// now that we're at the bottom, populate each state with children.
 		// TO DO: use a function after each round of children to check any of them for win conditions so we don't generate shit unnecessarily
 		
-		State[] childrenHolder;
-		childrenHolder = State.findChildren(statePointer);
-		statePointer.firstChild = childrenHolder[0];
-		statePointer.children = childrenHolder.length;
-		//statepointer.firstChild.neighbors = childrenHolder[1-n] <----- how?
-		
-		for(int i = 0; i < statePointer.neighbors.length; i++){
+		while(true){
+			State[] childrenHolder;
+			State[] neighborHolder;
+			childrenHolder = State.findChildren(statePointer);
 			
+			if(childrenHolder.length != 0){	//make sure there's children to populate with
+				size += childrenHolder.length;
+				statePointer.children = childrenHolder.length;
+				statePointer.firstChild = childrenHolder[0];
+				statePointer.lastChild = childrenHolder[childrenHolder.length - 1];
+				statePointer.firstChild.childNumber = 0;
+				statePointer.firstChild.depth = height + 1;
+				statePointer.firstChild.parent = statePointer;
+				statePointer.firstChild.rightNeighbor = childrenHolder[1];
+				neighborHolder = new State[childrenHolder.length - 1];
+				
+				for(int i = 0; i < neighborHolder.length; i++){	//move data over to neighborHolder to trim off the first child
+					neighborHolder[i] = childrenHolder[i+1];
+				}
+				
+				//link up the children
+				statePointer.firstChild.neighbors = neighborHolder;
+				statePointer.firstChild.neighbors[0].leftNeighbor = statePointer.firstChild;
+				statePointer.firstChild.neighbors[0].rightNeighbor = statePointer.firstChild.neighbors[1];
+					
+				for(int i = 1; i < statePointer.firstChild.neighbors.length - 1; i++){	
+					statePointer.firstChild.neighbors[i].leftNeighbor = statePointer.firstChild.neighbors[i-1];
+					statePointer.firstChild.neighbors[i].rightNeighbor = statePointer.firstChild.neighbors[i+1];	
+									
+				}
+				
+				statePointer.lastChild.leftNeighbor = statePointer.firstChild.neighbors[statePointer.firstChild.neighbors.length - 2];
+				
+				//link up neighbors first and last children
+				if(statePointer.leftNeighbor != null){
+					statePointer.firstChild.leftNeighbor = statePointer.leftNeighbor.lastChild;
+					statePointer.leftNeighbor.lastChild.rightNeighbor = statePointer.firstChild;
+				}
+			}	
+			
+			if(statePointer.rightNeighbor == null)
+				break;
+			
+			statePointer = statePointer.rightNeighbor;
 		}
 		
 		height++;
@@ -64,9 +102,12 @@ public class GameTree {
 	
 	static class State{
 		Board board;	//data we care about
-		State[] neighbors;	
+		State[] neighbors;
+		State rightNeighbor;
+		State leftNeighbor;
 		State parent;
 		State firstChild;
+		State lastChild;
 		int depth;
 		int children;
 		int childNumber;	//used for traversing?
